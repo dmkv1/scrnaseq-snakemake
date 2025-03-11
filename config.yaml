@@ -8,4 +8,4 @@ reference:
 resources:
   cellranger:
     threads: 32
-    memory: 256000  # RAM in MB
+    memory: 256  # RAM in GB
