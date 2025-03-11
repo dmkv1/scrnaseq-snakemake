@@ -1,0 +1,24 @@
+# Snakemake
+.snakemake/
+results/
+logs/
+snakemake.pid
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data
+*.xlsx
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bam
+*.vcf
+*.vcf.gz
+*.csv
+*.log
+*.tbi
+

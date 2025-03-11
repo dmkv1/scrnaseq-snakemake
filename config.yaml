@@ -1,0 +1,12 @@
+tools:
+  cellranger: "/opt/cellranger-9.0.1/cellranger"
+
+reference:
+  transcriptome: "/media/data/NGS/refs/10X_sc/refdata-gex-GRCh38-2024-A"
+  vdj: "/media/data/NGS/refs/10X_sc/refdata-cellranger-vdj-GRCh38-alts-ensembl-7.1.0"
+
+resources:
+  cellranger:
+    threads: 32
+    memory: 256000  # Memory in MB
+    time: "24:00:00"  # Time limit for job scheduler
