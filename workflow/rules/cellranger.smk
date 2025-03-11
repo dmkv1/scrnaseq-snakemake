@@ -18,7 +18,6 @@ rule cellranger_count:
     threads: config["resources"]["cellranger"]["threads"]
     resources:
         mem_mb=config["resources"]["cellranger"]["memory"],
-        time=config["resources"]["cellranger"]["time"],
     log:
         "logs/cellranger/{sample}_count.log",
     shell:
@@ -33,82 +32,9 @@ rule cellranger_count:
             --expect-cells={params.expected_cells} \
             --localcores={threads} \
             --localmem={resources.mem_mb} \
+            --create-bam true \
             > {log} 2>&1
         
         mv {params.sample}/outs/* results/cellranger/{params.sample}/outs/
         rm -rf {params.sample}
-        """
-
-
-# Rule for Cell Ranger VDJ (BCR analysis)
-rule cellranger_vdj_bcr:
-    input:
-        r1=lambda wildcards: get_bcr_fastqs(wildcards)["r1"],
-        r2=lambda wildcards: get_bcr_fastqs(wildcards)["r2"],
-    output:
-        annotations="results/cellranger/{sample}/outs/vdj_b/filtered_contig_annotations.csv",
-        contigs="results/cellranger/{sample}/outs/vdj_b/filtered_contig.fasta",
-    params:
-        cellranger=config["tools"]["cellranger"],
-        sample="{sample}",
-        fastq_dir=lambda wildcards: get_fastq_dir(wildcards, "BCR"),
-        reference=lambda _: config["reference"]["vdj"],
-    threads: config["resources"]["cellranger"]["threads"]
-    resources:
-        mem_mb=config["resources"]["cellranger"]["memory"],
-        time=config["resources"]["cellranger"]["time"],
-    log:
-        "logs/cellranger/{sample}_vdj_bcr.log",
-    shell:
-        """
-        mkdir -p results/cellranger/{params.sample}/outs/vdj_b
-        
-        {params.cellranger} vdj \
-            --id={params.sample}_bcr \
-            --reference={params.reference} \
-            --fastqs={params.fastq_dir} \
-            --sample={params.sample} \
-            --localcores={threads} \
-            --localmem={resources.mem_mb} \
-            > {log} 2>&1
-        
-        mv {params.sample}_bcr/outs/* results/cellranger/{params.sample}/outs/vdj_b/
-        rm -rf {params.sample}_bcr
-        """
-
-
-# Rule for Cell Ranger VDJ (TCR analysis)
-rule cellranger_vdj_tcr:
-    input:
-        r1=lambda wildcards: get_tcr_fastqs(wildcards)["r1"],
-        r2=lambda wildcards: get_tcr_fastqs(wildcards)["r2"],
-    output:
-        annotations="results/cellranger/{sample}/outs/vdj_t/filtered_contig_annotations.csv",
-        contigs="results/cellranger/{sample}/outs/vdj_t/filtered_contig.fasta",
-    params:
-        cellranger=config["tools"]["cellranger"],
-        sample="{sample}",
-        fastq_dir=lambda wildcards: get_fastq_dir(wildcards, "TCR"),
-        reference=lambda _: config["reference"]["vdj"],
-    threads: config["resources"]["cellranger"]["threads"]
-    resources:
-        mem_mb=config["resources"]["cellranger"]["memory"],
-        time=config["resources"]["cellranger"]["time"],
-    log:
-        "logs/cellranger/{sample}_vdj_tcr.log",
-    shell:
-        """
-        mkdir -p results/cellranger/{params.sample}/outs/vdj_t
-        
-        {params.cellranger} vdj \
-            --id={params.sample}_tcr \
-            --reference={params.reference} \
-            --fastqs={params.fastq_dir} \
-            --sample={params.sample} \
-            --localcores={threads} \
-            --localmem={resources.mem_mb} \
-            > {log} 2>&1
-        
-        mv {params.sample}_tcr/outs/* results/cellranger/{params.sample}/outs/vdj_t/
-        rm -rf {params.sample}_tcr
         """

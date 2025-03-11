@@ -8,5 +8,4 @@ reference:
 resources:
   cellranger:
     threads: 32
-    memory: 256000  # Memory in MB
-    time: "24:00:00"  # Time limit for job scheduler
+    memory: 256000  # RAM in MB

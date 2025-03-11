@@ -1,10 +1,19 @@
+import os
+
 # These variables will be populated by the main Snakefile
 samples = None
 config = None
 
 def get_gex_fastqs(wildcards):
     """Return the fastq paths for gene expression data"""
-    sample_row = samples[samples["Sample"] == wildcards.sample].iloc[0]
+    if samples is None:
+        raise ValueError("samples DataFrame is not initialized")
+    
+    matching_rows = samples[samples["Sample"] == wildcards.sample]
+    if len(matching_rows) == 0:
+        raise ValueError(f"No sample found with name '{wildcards.sample}'. Available samples: {samples['Sample'].tolist()}")
+    
+    sample_row = matching_rows.iloc[0]
     return {
         "r1": sample_row["GEX_fq1"],
         "r2": sample_row["GEX_fq2"]
