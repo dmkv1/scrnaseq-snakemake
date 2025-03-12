@@ -4,23 +4,23 @@ rule cellranger_count:
         r2=lambda wildcards: get_gex_fastqs(wildcards)["r2"],
     output:
         bam="results/cellranger/{sample}/outs/possorted_genome_bam.bam",
-        matrix.gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz",
-        features.gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/features.tsv.gz",
-        barcodes.gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz",
-        raw.matrix.gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/matrix.mtx.gz",
-        raw.features.gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/features.tsv.gz",
-        raw.barcodes.gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/barcodes.tsv.gz",
+        matrix_gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz",
+        features_gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/features.tsv.gz",
+        barcodes_gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz",
+        raw_matrix_gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/matrix.mtx.gz",
+        raw_features_gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/features.tsv.gz",
+        raw_barcodes_gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/barcodes.tsv.gz",
         summary="results/cellranger/{sample}/outs/web_summary.html",
         counter=temp(directory("results/cellranger/{sample}/SC_RNA_COUNTER_CS")),
     params:
         cellranger=config["tools"]["cellranger"],
-        transcriptome=:config["reference"]["transcriptome"],
+        transcriptome=config["reference"]["transcriptome"],
         outdir="results/cellranger/{sample}",
         sample="{sample}",
         fastq_dir=lambda wildcards: get_fastq_dir(wildcards, "GEX"),
         sample_prefix=lambda wildcards: get_fastq_prefix(wildcards, "GEX"),
         expected_cells=get_expected_cells,
-    threads: config["resources"]["cellranger"]["threads"],
+    threads: config["resources"]["cellranger"]["threads"]
     resources:
         mem_gb=config["resources"]["cellranger"]["memory"],
     log:
@@ -43,4 +43,3 @@ rule cellranger_count:
             --nosecondary \
             > {log} 2>&1
         """
-
