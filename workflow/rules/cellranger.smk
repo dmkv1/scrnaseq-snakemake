@@ -42,5 +42,6 @@ rule cellranger_multi:
             --disable-ui \
             > {log} 2>&1
 
-        mv {params.rundir} {params.outdir}
+        mv {params.rundir}/* {params.outdir}/
+        rm -rf {params.rundir}
         """
