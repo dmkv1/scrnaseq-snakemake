@@ -26,6 +26,6 @@ wildcard_constraints:
 rule all:
     input:
         [
-            f"results/{sample}/cellranger/outs/per_sample_outs/{sample}/sample_filtered_feature_bc_matrix/matrix.mtx.gz"
+            f"stamps/cellranger/{sample}.stamp"
             for sample in samples
         ],

@@ -2,6 +2,7 @@
 .snakemake/
 results/
 logs/
+stamps/
 snakemake.pid
 
 # Python
@@ -10,16 +11,19 @@ __pycache__/
 *$py.class
 
 # Data
-*.mro
+# input
 *.xlsx
+# cellranger
+*.mro
+*.stamp
+
+# fasta
 *.fastq
 *.fastq.gz
 *.fq
 *.fq.gz
+# bam
 *.bam
-*.vcf
-*.vcf.gz
 *.csv
 *.log
 *.tbi
-
