@@ -1,45 +1,46 @@
-rule cellranger_count:
-    input:
-        r1=lambda wildcards: get_gex_fastqs(wildcards)["r1"],
-        r2=lambda wildcards: get_gex_fastqs(wildcards)["r2"],
+rule create_multi_config:
     output:
-        bam="results/cellranger/{sample}/outs/possorted_genome_bam.bam",
-        matrix_gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz",
-        features_gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/features.tsv.gz",
-        barcodes_gz="results/cellranger/{sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz",
-        raw_matrix_gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/matrix.mtx.gz",
-        raw_features_gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/features.tsv.gz",
-        raw_barcodes_gz="results/cellranger/{sample}/outs/raw_feature_bc_matrix/barcodes.tsv.gz",
-        summary="results/cellranger/{sample}/outs/web_summary.html",
-        counter=temp(directory("results/cellranger/{sample}/SC_RNA_COUNTER_CS")),
+        config_csv="results/{sample}/multi_config.csv",
+    params:
+        sample="{sample}",
+    run:
+        from workflow.scripts.create_multi_config import create_multi_config
+
+        create_multi_config(params.sample, samples_df, config, output.config_csv)
+
+
+rule cellranger_multi:
+    input:
+        config_csv="results/{sample}/multi_config.csv",
+    output:
+        directory("results/{sample}/cellranger/outs"),
+        counts="results/{sample}/cellranger/outs/per_sample_outs/{sample}/sample_filtered_feature_bc_matrix/matrix.mtx.gz",
+        features="results/{sample}/cellranger/outs/per_sample_outs/{sample}/sample_filtered_feature_bc_matrix/features.tsv.gz",
+        barcodes="results/{sample}/cellranger/outs/per_sample_outs/{sample}/sample_filtered_feature_bc_matrix/barcodes.tsv.gz",
+        vdj_b_csv="results/{sample}/cellranger/outs/per_sample_outs/{sample}/vdj_b/filtered_contig_annotations.csv",
+        vdj_t_csv="results/{sample}/cellranger/outs/per_sample_outs/{sample}/vdj_t/filtered_contig_annotations.csv",
+        websummary="results/{sample}/cellranger/outs/per_sample_outs/{sample}/web_summary.html",
+        counter=temp(directory("results/{sample}/cellranger/SC_MULTI_CS")),
     params:
         cellranger=config["tools"]["cellranger"],
-        transcriptome=config["reference"]["transcriptome"],
-        outdir="results/cellranger/{sample}",
         sample="{sample}",
-        fastq_dir=lambda wildcards: get_fastq_dir(wildcards, "GEX"),
-        sample_prefix=lambda wildcards: get_fastq_prefix(wildcards, "GEX"),
-        expected_cells=get_expected_cells,
+        rundir="results/{sample}/cellranger_run",
+        outdir="results/{sample}/cellranger",
     threads: config["resources"]["cellranger"]["threads"]
     resources:
         mem_gb=config["resources"]["cellranger"]["memory"],
     log:
-        "logs/cellranger/{sample}_count.log",
+        "logs/cellranger/{sample}_multi.log",
     shell:
         """
-        rm -rf {params.outdir}
-
-        {params.cellranger} count \
+        {params.cellranger} multi \
             --id={params.sample} \
-            --create-bam true \
-            --transcriptome={params.transcriptome} \
-            --fastqs={params.fastq_dir} \
-            --sample={params.sample_prefix} \
-            --expect-cells={params.expected_cells} \
-            --output-dir {params.outdir} \
+            --csv={input.config_csv} \
             --localcores={threads} \
             --localmem={resources.mem_gb} \
+            --output-dir {params.rundir} \
             --disable-ui \
-            --nosecondary \
             > {log} 2>&1
+
+        mv {params.rundir} {params.outdir}
         """
