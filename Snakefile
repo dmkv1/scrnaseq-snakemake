@@ -25,7 +25,5 @@ wildcard_constraints:
 
 rule all:
     input:
-        [
-            f"stamps/cellranger/{sample}.stamp"
-            for sample in samples
-        ],
+        [f"stamps/cellranger/{sample}.stamp" for sample in samples],
+        [f"results/{sample}/sce/{sample}_sce_raw.rds" for sample in samples],

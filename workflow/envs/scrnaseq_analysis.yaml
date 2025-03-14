@@ -1,0 +1,12 @@
+name: scrnaseq
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - pwwang
+dependencies:
+  - r-base=4.4.3
+  - bioconductor-singlecellexperiment=1.28.0
+  - bioconductor-dropletutils=1.26.0
+  - bioconductor-biocparallel=1.40.0
+  - bioconductor-screpertoire=2.2.1

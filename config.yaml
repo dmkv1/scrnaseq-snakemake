@@ -9,3 +9,6 @@ resources:
   cellranger:
     threads: 32
     memory: 256  # RAM in GB
+
+params:
+  random_seed: 42
