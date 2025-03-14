@@ -30,7 +30,7 @@ rule sce_QC:
         sample="{sample}",
         threads=config["resources"]["cellranger"]["threads"],
         random_seed=config["params"]["random_seed"],
-        QC_KNN=config["params"]["QC"]["KNN"],
+        KNN=config["params"]["QC"]["KNN"],
         mito_perc=config["params"]["QC"]["mito_perc"],
         cluster_perc=config["params"]["QC"]["cluster_perc"],
     conda:
@@ -39,3 +39,23 @@ rule sce_QC:
         "logs/{sample}_R_sce_QC.log",
     script:
         "../scripts/sce_QC.R"
+
+
+rule sce_annotations:
+    input:
+        sce="results/{sample}/sce/{sample}_sce_2_QC_filtered.rds",
+    output:
+        sce_annotated="results/{sample}/sce/{sample}_sce_3_annotated.rds",
+        plot_UMAPs="results/{sample}/plots/{sample}_QC_UMAPs.png",
+        markers="results/{sample}/plots/{sample}_markers.rds",
+    params:
+        sample="{sample}",
+        threads=config["resources"]["cellranger"]["threads"],
+        random_seed=config["params"]["random_seed"],
+        KNN=config["params"]["annotation"]["KNN"],
+    conda:
+        "../envs/scrnaseq_analysis.yaml"
+    log:
+        "logs/{sample}_R_sce_annotation.log",
+    script:
+        "../scripts/sce_annotation.R"

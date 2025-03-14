@@ -2,7 +2,7 @@ threads <- snakemake@params[["threads"]]
 random_seed <- snakemake@params[["random_seed"]]
 sample_name <- snakemake@params[["sample"]]
 mito_genes_perc_thresh <- snakemake@params[["mito_perc"]]
-knn <- snakemake@params[["QC_KNN"]]
+knn <- snakemake@params[["KNN"]]
 cluster_removal_threshold <- snakemake@params[["cluster_perc"]]
 
 input_sce <- snakemake@input[["sce"]]
@@ -130,6 +130,8 @@ print(
     chosen_pc_num
   )
 )
+
+# UMAP
 set.seed(random_seed)
 sce <- runUMAP(
   sce,
@@ -139,6 +141,8 @@ sce <- runUMAP(
   dimred = "PCA",
   BPPARAM = bpp
 )
+
+# Clustering
 set.seed(random_seed)
 nn_clust <- clusterCells(
   sce,

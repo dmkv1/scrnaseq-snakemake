@@ -16,3 +16,5 @@ params:
     mito_perc: 10 # Percentage of mitochindrial genes (1-99) in the cell, cells with more than that would be discarded
     KNN: 30 # K nearest neighbors for QC clustering (usually 30)
     cluster_perc: 10 # QC would remove the clusters with more than this percentage threshold
+  annotation:
+    KNN: 40 # K nearest neighbors for final sample clustering

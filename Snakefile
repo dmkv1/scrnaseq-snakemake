@@ -29,6 +29,4 @@ rule all:
         [f"stamps/cellranger/{sample}.stamp" for sample in samples],
         [f"results/{sample}/sce/{sample}_sce_1_raw.rds" for sample in samples],
         [f"results/{sample}/sce/{sample}_sce_2_QC_filtered.rds" for sample in samples],
-
-
-#    [f"results/{sample}/sce/{sample}_sce_3_processed.rds" for sample in samples],
+        [f"results/{sample}/sce/{sample}_sce_3_annotated.rds" for sample in samples],
