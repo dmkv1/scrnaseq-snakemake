@@ -12,6 +12,7 @@ samples_df = samples_df.fillna("")
 
 # Include rules
 include: "workflow/rules/cellranger.smk"
+include: "workflow/rules/SCE_processing.smk"
 
 
 # Define samples with available data
@@ -26,4 +27,8 @@ wildcard_constraints:
 rule all:
     input:
         [f"stamps/cellranger/{sample}.stamp" for sample in samples],
-        [f"results/{sample}/sce/{sample}_sce_raw.rds" for sample in samples],
+        [f"results/{sample}/sce/{sample}_sce_1_raw.rds" for sample in samples],
+        [f"results/{sample}/sce/{sample}_sce_2_QC_filtered.rds" for sample in samples],
+
+
+#    [f"results/{sample}/sce/{sample}_sce_3_processed.rds" for sample in samples],

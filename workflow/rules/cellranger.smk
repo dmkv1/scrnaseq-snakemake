@@ -35,22 +35,3 @@ rule cellranger_multi:
             > {log} 2>&1
         touch {output.stamp}
         """
-
-
-rule create_sce:
-    input:
-        stamp="stamps/cellranger/{sample}.stamp",
-    output:
-        sce="results/{sample}/sce/{sample}_sce_raw.rds",
-    params:
-        sample="{sample}",
-        threads=config["resources"]["cellranger"]["threads"],
-        counts_dir="results/{sample}/cellranger/outs/per_sample_outs/{sample}/count/sample_filtered_feature_bc_matrix",
-        vdj_b="results/{sample}/cellranger/outs/per_sample_outs/{sample}/vdj_b/filtered_contig_annotations.csv",
-        vdj_t="results/{sample}/cellranger/outs/per_sample_outs/{sample}/vdj_t/filtered_contig_annotations.csv",
-    conda:
-        "../envs/scrnaseq_analysis.yaml"
-    log:
-        "logs/{sample}_R_create_sce.log",
-    script:
-        "../scripts/create_sce.R"
